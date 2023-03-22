@@ -12,6 +12,14 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+storage.obj_types = {
+    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+    'State': State, 'City': City, 'Amenity': Amenity,
+    'Review': Review
+    }
+storage.reload()
+
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
