@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 """This module defines a class to manage file storage for hbnb clone"""
-import json
 from models.base_model import BaseModel, Base
 from models.user import User
 from models.place import Place
@@ -8,9 +7,9 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, scoped_session
-import os
+from os import environ
 
 
 class DBStorage():
@@ -21,17 +20,22 @@ class DBStorage():
     def __init__(self):
         """
         Constructor
-        Connect to the database through self.__engine. Drop all tables if the environment variable HBNB_ENV is equal to test.
+        Connect to the database through self.__engine. Drop all tables if the environment
+        variable HBNB_ENV is equal to test.
         """
         self.__engine = create_engine(
-            f"mysql+mysqldb://{os.getenv('HBNB_MYSQL_USER')}:{os.getenv('HBNB_MYSQL_PWD')}@{os.getenv('HBNB_MYSQL_HOST')}/{os.getenv('HBNB_MYSQL_DB')}",
+            f"mysql+mysqldb://{environ['HBNB_MYSQL_USER']}:{environ['HBNB_MYSQL_PWD']}@{environ['HBNB_MYSQL_HOST']}/{environ['HBNB_MYSQL_DB']}",
             pool_pre_ping=True,
         )
-        if os.getenv('HBNB_ENV') == 'test':
-            Base.metadata.drop_all(self.__engine)
+        if 'HBNB_ENV' in environ and environ['HBNB_ENV'] == 'test':
+            meta = MetaData()
+            meta.reflect(bind=self.__engine)
+            for table in reversed(meta.sorted_tables):
+                self.__engine.execute(table.delete())
 
     def all(self, cls=None):
-        """Returns the list of objects of one type of class. Return a dictionary like FileStorage"""
+        """Returns the list of objects of one type of class. Return a
+        dictionary like FileStorage"""
         result = {}
         if cls is None:
             objects = self.__session.query(cls).all()
@@ -39,7 +43,7 @@ class DBStorage():
                 key = f"{type(obj).__name__}.{obj.id}"
                 result[key] = obj
         else:
-            classes = [User, State, City, Amenity, Place, Review]
+            classes = [State, City, User, Place, Review, Amenity]
             for class_ in classes:
                 objects = self.__session.query(class_).all()
                 for obj in objects:
@@ -54,6 +58,10 @@ class DBStorage():
     def save(self):
         """Saves storage dictionary change to file"""
         self.__session.commit()
+    
+    def close(self):
+        """Close the session"""
+        self.__session.close()
     
     def delete(self, obj=None):
         """Delete obj from __objects if it's inside, if obj is equal to None, do nothing"""

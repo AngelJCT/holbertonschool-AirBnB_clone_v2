@@ -3,21 +3,20 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.city import City
-from os import getenv
+from os import environ
 
 
 class State(BaseModel, Base):
     """ State class """
-    name = ""
     __tablename__ = 'states'
-    if getenv('HBNB_TYPE_STORAGE') == 'db':
-        name = Column(String(128), nullable=False)
-        cities = relationship("City", backref="state", cascade="all, delete")
-    else:
+    name = Column(String(128), nullable=False)
+    cities = relationship("City", backref="state", cascade="all, delete")
+    if ('HBNB_TYPE_STORAGE' not in environ or
+            environ["HBNB_TYPE_STORAGE"] != 'db'):
         @property
         def cities(self):
             """ Returns the list of City instances with state_id """
+            from models.city import City
             from models import storage
             cities = []
             for city in storage.all(City).values():

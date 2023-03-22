@@ -22,7 +22,7 @@ class FileStorage:
         else:
             new_dict = {}
             for key, value in FileStorage.__objects.items():
-                if value.__class__.__name__ == cls.__name__:
+                if isinstance(value, cls):
                     new_dict[key] = value
             return new_dict
 
@@ -35,14 +35,14 @@ class FileStorage:
         objects_dict = {}
         for key, value in self.__objects.items():
             objects_dict[key] = value.to_dict()
-        with open(self.__file_path, "w", encoding='utf-8') as f:
+        with open(self.__file_path, "w+", encoding='utf-8') as f:
             json.dump(objects_dict, f)
 
     def reload(self):
         """Loads storage dictionary from file"""
         try:
             temp = {}
-            with open(FileStorage.__file_path, 'r') as f:
+            with open(FileStorage.__file_path, 'r', encoding='UTF-8') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
                         self.all()[key] = self.obj_types[val['__class__']](**val)

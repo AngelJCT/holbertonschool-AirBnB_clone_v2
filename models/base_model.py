@@ -42,6 +42,7 @@ class BaseModel:
             # If the kwargs were used, we're ALWAYS supposed
             # to make 'updated_at' be now.
 
+
     def __str__(self):
         """Returns a string representation of the instance"""
         cls = self.__class__.__name__
