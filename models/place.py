@@ -4,8 +4,6 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from os import getenv
-from models.review import Review
-from models import storage
 
 
 place_amenity = Table('place_amenity', Base.metadata,
@@ -59,5 +57,6 @@ class Place(BaseModel, Base):
         @amenities.setter
         def amenities(self, obj):
             """Handles append method for adding an Amenity.id to the attribute amenity_ids"""
+            from models.amenity import Amenity
             if type(obj) == Amenity:
                 self.amenity_ids.append(obj.id)
