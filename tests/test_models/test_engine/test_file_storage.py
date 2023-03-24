@@ -21,7 +21,12 @@ class test_fileStorage(unittest.TestCase):
         """ Remove storage file at end of tests """
         try:
             os.remove('file.json')
-        except:
+        except Exception:
+            # If the file doesn't exist,
+            # Just don't do nothing
+
+            # use 'Exception', to prevent catching
+            # Ctrl+C KeybardInterrupt errors
             pass
 
     def test_obj_list_empty(self):

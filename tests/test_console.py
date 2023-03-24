@@ -58,7 +58,7 @@ class TestDoCreate(unittest.TestCase):
         self.console.do_create("Review up=0")
         current = storage.all().copy()
         self.assertEqual(previous, current)
-    
+
     def test_correct_class_and_params(self):
         """
         If the class and arg names are correct,

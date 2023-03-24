@@ -36,12 +36,13 @@ class BaseModel:
                 # specified in the classes' files.
                 self.__setattr__(k, v)
             else:
-                raise KeyError(f"Invalid attribute key:value pair for '{type(self)}': {k}:{v}")
+                raise KeyError(f"Invalid attribute key:value pair for \
+'{type(self)}': {k}:{v}")
+
         if kwargs:
             self.updated_at = datetime.now()
             # If the kwargs were used, we're ALWAYS supposed
             # to make 'updated_at' be now.
-
 
     def __str__(self):
         """Returns a string representation of the instance"""
@@ -64,7 +65,7 @@ class BaseModel:
         if '_sa_instance_state' in dictionary:
             del dictionary['_sa_instance_state']
         return dictionary
-    
+
     def delete(self):
         """Delete the current instance from the storage"""
         models.storage.delete(self)
