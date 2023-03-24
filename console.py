@@ -10,6 +10,15 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
+from sqlalchemy.exc import NoForeignKeysError
+
+
+storage.obj_types = {
+    'BaseModel': BaseModel, 'User': User, 'Place': Place,
+    'State': State, 'City': City, 'Amenity': Amenity,
+    'Review': Review
+    }
+storage.reload()
 
 
 class HBNBCommand(cmd.Cmd):
@@ -123,11 +132,14 @@ class HBNBCommand(cmd.Cmd):
             return
 
         args = arg.split()
-        if args[0] not in self.classes:
+
+        class_name = args[0]
+
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
 
-        obj = eval(args[0])()
+        obj_args = {}
         for param in args[1:]:
             try:
                 key, value = param.split("=", 1)
@@ -137,11 +149,16 @@ class HBNBCommand(cmd.Cmd):
                     value = float(value)
                 else:
                     value = int(value)
-                setattr(obj, key, value)
+                obj_args[key] = value
             except Exception:
                 pass
-        obj.save()
-        print(obj.id)
+        try:
+            obj = eval(class_name)(**obj_args)
+        except (KeyError, NoForeignKeysError) as args_wrong:
+            print(args_wrong)
+        else:
+            obj.save()
+            print(obj.id)
 
     def help_create(self):
         """ Help information for the create method """

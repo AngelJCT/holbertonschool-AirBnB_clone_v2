@@ -5,7 +5,12 @@ from models.review import Review
 
 
 class test_review(test_basemodel):
-    """ """
+    """
+    Tests the class 'models.review.Review',
+    and how it interacts with the 'storage'
+    variable, console and other parts
+    of the program.
+    """
 
     def __init__(self, *args, **kwargs):
         """ """

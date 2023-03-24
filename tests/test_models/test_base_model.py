@@ -24,7 +24,12 @@ class test_basemodel(unittest.TestCase):
     def tearDown(self):
         try:
             os.remove('file.json')
-        except:
+        except Exception:
+            # If the file doesn't exist,
+            # Just don't do nothing
+
+            # use 'Exception', to prevent catching
+            # Ctrl+C KeybardInterrupt errors
             pass
 
     def test_default(self):
