@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Starts a Flask web application"""
 from flask import Flask, render_template
+from models.state import State
 from models import storage
 app = Flask(__name__)
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 @app.route('/states_list', strict_slashes=False)
 def states_list():
     """Displays a HTML page with a list of states"""
-    states = list(storage.all("State").values())
+    states = [state for state in storage.all(State).values()]
     states.sort(key=lambda state: state.name)
     return render_template('7-states_list.html', states=states)
 
