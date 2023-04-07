@@ -44,12 +44,11 @@ class DBStorage():
                 for obj in objects:
                     key = f"{cls_type}.{obj.id}"
                     result[key] = obj
-        else:
-            if isinstance(cls, str):
-                objects = self.__session.query(cls).all()
-                for obj in objects:
-                    key = f"{cls.__name__}.{obj.id}"
-                    result[key] = obj
+        elif isinstance(cls, str):
+            objects = self.__session.query(cls).all()
+            for obj in objects:
+                key = f"{cls.__name__}.{obj.id}"
+                result[key] = obj
         return result
 
     def new(self, obj):
