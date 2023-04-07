@@ -39,16 +39,16 @@ class DBStorage():
         obj_types = {'User': User, 'State': State, 'City': City, 'Amenity': Amenity, 'Place': Place, 'Review': Review}
         result = {}
         if cls is None:
-            for cls_type in obj_types:
-                objects = self.__session.query(obj_types[cls_type]).all()
-                for obj in objects:
-                    key = f"{cls_type}.{obj.id}"
-                    result[key] = obj
-        elif isinstance(cls, str):
-            objects = self.__session.query(cls).all()
-            for obj in objects:
-                key = f"{cls.__name__}.{obj.id}"
-                result[key] = obj
+            for cls_type in obj_types.keys():
+                for objects in self.__session.query(obj_types[cls_type]).all():
+                    key = f"{cls_type}.{objects.id}"
+                    result[key] = objects
+        else:
+            if isinstance(cls, str):
+                cls = obj_types[cls]
+            for objects in self.__session.query(cls).all():
+                key = f"{cls.__name__}.{objects.id}"
+                result[key] = objects
         return result
 
     def new(self, obj):
